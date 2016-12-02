@@ -1,7 +1,4 @@
-c:\corpora\exe\perl -x %0 %1 %2 %3 %4
-:pause
-exit
-#!usr/bin/perl
+#!/usr/bin/perl
 $DEBUG = 0;
 $PREFIX_LEN = 3;
 $HTML = 0;
@@ -18,8 +15,8 @@ if (!@ARGV) { print 'Usage: accent.bat <files>'; exit; }
 @files = @ARGV;
 
 %dic = ();
-dic_read("$0/../accent1.dic");	# user dict
-dic_read("$0/../accent.dic");	# main dict
+dic_read("accent1.dic");	# user dict
+dic_read("accent.dic");	# main dict
 
 if ($DEBUG) {
 	open(OUT, ">accent.dix");
@@ -53,6 +50,14 @@ foreach $file (@files) {
 	$oldfile = $file. ".~";
 	rename($file, $oldfile); rename($newfile, $file);
   }
+
+  print "\r\n";
+  $pppy = "./pp.py";
+  $inp = "$newfile";
+  $command = "$pppy $inp";
+  open IN, "$command |";
+  @lines = <IN>;
+  print "@lines";
 }
 $time = time() - $time;
 print STDERR "\n$time secs\n";

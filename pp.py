@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import sys
@@ -16,7 +16,8 @@ our_format_file_name = in_file_name+'.ours'
 with open(in_file_name,'rb') as data_file:
     print('converting Polyakov\'s format into ours')
     data = data_file.read()
-    data_dec = data.decode('cp1251')
+    #data_dec = data.decode('cp1251')
+    data_dec = data.decode('utf8')
     remove_chars = dict.fromkeys(map(ord,'\"\''),None)
     data_simplified = data_dec.translate(remove_chars)
 
@@ -26,7 +27,7 @@ with open(our_format_file_name,'w') as out_file:
     syl_length = 0
     for char in data_simplified:
         if char == '\r':
-            data_out = data_out + str(pos_index) + ' ' + str(syl_length) + ' ? '
+            data_out = data_out + str(pos_index) + ',' + str(syl_length) + ',?;'
             pos_index += syl_length
             syl_length = 0
         else:

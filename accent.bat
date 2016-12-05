@@ -1,4 +1,6 @@
 #!/usr/bin/perl
+use utf8;
+
 $DEBUG = 0;
 $PREFIX_LEN = 3;
 $HTML = 0;
@@ -9,7 +11,7 @@ if ($HTML) {
 	%ACCENT = ("'" => "'", '`' => '`', '"' => '"');
 }
 
-$VOC = "[àåèîóûışÿ¸ÀÅÈÎÓÛİŞß¨]";
+$VOC = "[Ğ°ĞµĞ¸Ğ¾ÑƒÑ‹ÑÑÑÑ‘ĞĞ•Ğ˜ĞĞ£Ğ«Ğ­Ğ®Ğ¯Ğ]";
 
 if (!@ARGV) { print 'Usage: accent.bat <files>'; exit; }
 @files = @ARGV;
@@ -37,10 +39,11 @@ foreach $file (@files) {
 		@ar = split(/(<[^>]+>)/);
 		foreach $a (@ar) {
 			if ($a =~ /^</) { next; }
-			@words = split(/([^À-ÿ¨¸]+)/, $a);
+			@words = split(/([^Ğ-ÑĞÑ‘]+)/, $a);
 			foreach $w (@words) { $w = accentw($w); }
 			$a = join('', @words);
 			$count += $#words+1;
+            #last;
 		}
 		$_ = join('', @ar)."\n";
 		print OUT $_;
@@ -78,7 +81,7 @@ sub dic_read() {
 
 sub accentw() {
 	my ($word) = @_;
-	if ($word !~ /[À-ÿ]/) { return $word; }
+	if ($word !~ /[Ğ-Ñ]/) { return $word; }
 	my ($key, $caps) = normalize($word);
 	my $len = length($key);
 
@@ -109,14 +112,14 @@ sub accentw() {
 		$chars[$pos-1] .= $acc;
 	}
 	$word = join("", @chars);
-	$word =~ s/å"/¸/g; $word =~ s/Å"/¨/g;
+	$word =~ s/Ğµ"/Ñ‘/g; $word =~ s/Ğ•"/Ğ/g;
 	return $word;
 }
 
 sub normalize() {
 	my ($s) = @_;
-	my $caps = ($s =~ /^[À-ß]/)?'!':'';
-	$s =~ tr/À-ß¨¸/à-ÿåå/;
+	my $caps = ($s =~ /^[Ğ-Ğ¯]/)?'!':'';
+	$s =~ tr/Ğ-Ğ¯ĞÑ‘/Ğ°-ÑĞµĞµ/;
 	$s =~ s/&[^;]+;//g;
 	return ($s, $caps);
 }

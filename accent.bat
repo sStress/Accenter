@@ -1,6 +1,8 @@
 #!/usr/bin/perl
 use utf8;
+#binmode(STDOUT, ":utf8");
 
+    
 $DEBUG = 0;
 $PREFIX_LEN = 3;
 $HTML = 0;
@@ -43,7 +45,6 @@ foreach $file (@files) {
 			foreach $w (@words) { $w = accentw($w); }
 			$a = join('', @words);
 			$count += $#words+1;
-            #last;
 		}
 		$_ = join('', @ar)."\n";
 		print OUT $_;
@@ -81,6 +82,7 @@ sub dic_read() {
 
 sub accentw() {
 	my ($word) = @_;
+    my (@chars) = split("",$word);
 	if ($word !~ /[А-я]/) { return $word; }
 	my ($key, $caps) = normalize($word);
 	my $len = length($key);
@@ -107,7 +109,8 @@ sub accentw() {
 	foreach $val (@vals) {
 		$val =~ /(\d+)(.*)/;
 		my ($pos, $acc) = ($1, $2);
-		if ($acc eq "") { $acc = "'"; }
+		if (($acc eq "")||($acc eq "\r")) { $acc = "'"; }
+        if ($acc eq "\"\r") { $acc = "\""; }
 		$acc = $ACCENT{$acc} || $acc;
 		$chars[$pos-1] .= $acc;
 	}

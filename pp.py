@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import sys
@@ -10,26 +10,30 @@ if number_of_input < 2:
     exit()
 
 in_file_name = sys.argv[1]
-our_format_file_name = in_file_name+'.ours'
+stressed_file_name = in_file_name+'.sstr'
 
 
 with open(in_file_name,'rb') as data_file:
     print('converting Polyakov\'s format into ours')
     data = data_file.read()
-    #data_dec = data.decode('cp1251')
     data_dec = data.decode('utf8')
-    remove_chars = dict.fromkeys(map(ord,'\"\''),None)
-    data_simplified = data_dec.translate(remove_chars)
 
-with open(our_format_file_name,'w') as out_file:
-    data_out = ''
+with open(stressed_file_name,'w') as stress_file:
+    stress_pos = []
     pos_index = 0
-    syl_length = 0
-    for char in data_simplified:
-        if char == '\r':
-            data_out = data_out + str(pos_index) + ',' + str(syl_length) + ',?;'
-            pos_index += syl_length
-            syl_length = 0
+    index = 0
+    for char in data_dec:
+        if char == '\'':
+            stress_pos.append(pos_index-1)
+        elif char == '"':
+            stress_pos.append(pos_index-1)
+        elif char == '`':
+            pass
         else:
-            syl_length += 1
-    out_file.write(data_out)
+            pos_index += 1
+        index += 1 
+
+    stress_pos = sorted(set(stress_pos))
+
+    stress_file.write(str(stress_pos).replace(" ","")[1:-1])
+

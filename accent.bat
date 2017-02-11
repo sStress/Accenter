@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use utf8;
-#binmode(STDOUT, ":utf8");
+binmode(STDOUT, ":utf8");
 
     
 $DEBUG = 0;
@@ -31,10 +31,11 @@ if ($DEBUG) {
 $time = time();
 $count = 0;
 foreach $file (@files) {
-	print STDERR "\r", $file;
-	open(IN, $file);
+	print STDERR "\r\n", $file;
+	print "\n";
+	open(IN, "<:encoding(UTF-8)", $file);
 	($newfile = $file) =~ s/\.(?=[^.]+$)/.acc./;
-	open(OUT, ">$newfile");
+	open(OUT, ">:encoding(UTF-8)", "$newfile");
 	while (<IN>) {
 		if ($count % 1 == 0) { print "\r$count"; }
 		chomp();
@@ -55,8 +56,8 @@ foreach $file (@files) {
 	rename($file, $oldfile); rename($newfile, $file);
   }
 
-  print "\r\n";
-  $pppy = "./pp.py";
+  print "\n";
+  $pppy = "python.exe pp.py";
   $inp = "$newfile";
   $command = "$pppy $inp";
   open IN, "$command |";
@@ -68,7 +69,7 @@ print STDERR "\n$time secs\n";
 
 sub dic_read() {
 	my ($dic) = @_;
-	open(IN, $dic) || die "Can't open $dic";
+	open(IN, "<:encoding(UTF-8)", $dic) || die "Can't open $dic";
 	print "Reading dictionary\n";
 	while(<IN>) {
 		chomp();
